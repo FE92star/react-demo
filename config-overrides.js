@@ -36,11 +36,11 @@ module.exports = override(
         exclude: /node_modules/
       }
     )
-    config.module.rules[2].oneOf[7].use[2].options.sourceMap = false
+    config.module.rules[2].oneOf[7].use[2].options.sourceMap = false // CSS的map设置无效，目前还没有找到合适的解决方案
     config.output = { // 输出配置
       publicPath: '', 
-      filename: 'js/[name].[chunkhash:8].js', //JS的输出
-      chunkFilename: 'js/[name].[chunkhash:8].js',
+      filename: 'js/[name].[hash:8].js', //JS的输出，编译提示不能用[chunkhash]，必须要用[hash]代替
+      chunkFilename: 'js/[name].[hash:8].js',
       path: path.resolve(__dirname, 'build') // 当改变一次输出路径之后，即使把对应的配置选项删除，也会按照新的配置，因此这个选项需要加上才能覆盖默认配置，尽量不修改此选项配置
     }
     // css的输出配置
