@@ -7,5 +7,6 @@
 2. 在项目的根目录下新建`config-overrides.js`文件；
 3. 根据[官方API文档](https://github.com/arackaf/customize-cra/blob/master/api.md)，按照自己的需求配置；
 4. 同时将`package.json`文件中的启动器改成`react-app-rewired`即可生效；
+5. 改变原始的框架`webpack`配置，不单单可以通过`customize-cra`插件暴露的API来进行覆盖配置，同时也可以通过传入一个匿名函数，函数的参数是`webpack的配置对象-config`，可以打印其默认配置对象，根据自己的需求单独设置`config`对象的每一个默认值，从而达到自定义配置的目的；
 
 ### Q2. 学习React无状态和有状态的组件编写方法
