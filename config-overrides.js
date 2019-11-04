@@ -49,7 +49,7 @@ module.exports = override(
     return config
   }
 )
-// 基础配置输出
+// 基础配置对象config输出
 // {
 //   mode: 'production',
 //   bail: true,
