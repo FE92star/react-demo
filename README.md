@@ -178,7 +178,8 @@ const App = HOCProps(Wrap);
 * [参考文献](https://juejin.im/post/5c72b97de51d4545c66f75d5)
 
 ### Q7. React的Hooks的基础用法(16.8版本新增的写法)
-* [参考文献](https://juejin.im/post/5dbbdbd5f265da4d4b5fe57d)
+* [参考文献1](https://juejin.im/post/5dbbdbd5f265da4d4b5fe57d)
+* [参考文献2](http://www.react-china.org/t/topic/34076)
 * [官方参考文献](https://zh-hans.reactjs.org/docs/hooks-intro.html)
 1. `useState`用于设置状态以及对应的`setState`改变状态的处理函数
 ```js
