@@ -31,11 +31,11 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          <p onClick={ this.handleClick }>
+          <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
           {/* <Button buttonText="你确定？？？"/> */}
-          <Button buttonText={ this.state.appText }></Button>
+          <Button buttonText={ this.state.appText } onClick={ this.handleClick } fontSize="12px"></Button>
         </header>
       </div>
     )

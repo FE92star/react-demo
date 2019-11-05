@@ -14,18 +14,165 @@
 ### Q2. 学习React无状态和有状态的组件编写方法
 * 组件输出可以有两种写法，一种是构造函数，一种是`class 组件名 extends Component`，同时组件引用的时候同Vue不一样，直接引入即可使用引入名称作为组件名使用，可以写成单闭合标签形式，也可以双标签形式。
 
-### Q3. React的生命周期
-* 同Vue类似，React也有自己的生命周期，在这些生命周期里处理不同的业务逻辑，`will`方法会在某些行为发生之前调用，`did`方法在某些行为发生之后调用。
+### Q3. React组件的生命周期
+* 同Vue类似，React组件也有自己的生命周期，在这些生命周期里处理不同的业务逻辑，`will`方法会在某些行为发生之前调用，`did`方法在某些行为发生之后调用，不过作为类定义的React组件最开始调用的是`constructor`，用于初始化定义`state`，[参考文献](https://zhuanlan.zhihu.com/p/30971608)
 #### 装载组件触发：（调用次数）——（能否使用setState()）
 1. `getDefaultProps`：获取默认的组件属性；1——否
 2. `getInitialState`：获取初始化的状态；1——否
-3. `componentWillMount`：组件即将挂载到DOM中；1——是
-4. `render`：组件实例化渲染；>=1——否
-5. `componentDidMount`：组件已经挂载完毕；1——是
+3. `componentWillMount`：状态初始化；1——是——发生在函数第一次render之前，状态初始化阶段，为render渲染做准备
+4. `render`：组件实例化渲染；>=1——否——渲染过程应该是纯粹的，不能再此阶段更改状态，也无法访问真实的DOM元素
+5. `componentDidMount`：组件已经挂载完毕；1——是（一般ajax数据操作都在这个钩子函数中进行，同时可以访问真实的DOM元素），访问真实的DOM的原生API方法——`ReactDOM.findDOMNode(this.refs.chart)`，即React也可以通过`refs`来访问真实的DOM。当在此声明周期中计算改变DOM元素的样式，可以通过`forceUpdate`强制触发`render`重新渲染。
 #### 运行中触发：
-1. `componentWillReceiveProps`：组件的属性发生变化；>=0——是
-2. `shouldComponentUpdate`：组件是否更新；>=0——否
-3. `componentWillUpdate`：组件将要更新之前；>=0——否
-4. `componentDidUpdate`：组件已经更新成功；>=0——否
+1. `componentWillReceiveProps`：组件的属性发生传递；>=0——是——父元素的属性值传递过来就会触发此生命周期，即使props没有改变，也会触发，因此如果需要在属性变化时执行回调，则需要手动比较，传递给此生命周期的参数是`nextProps`——更新之后的props:
+```js
+  class Button extends Component {
+    state = {
+      status: true
+    }
+    componentWillReceiveProps(nextProps) {
+      const { btnText } = this.props
+      if(nextProps !== btnText) { // 手动比较新旧属性是否发生变化
+        cb()
+      }
+    }
+  }
+```
+2. `shouldComponentUpdate`：组件是否更新；>=0——否——默认都是`true`，传递的参数是新的props和state，形参名称是`nextProps`和`nextState`，React官方通过`PureRenderMixin`——内部修改了此钩子函数，可以用来检测是否需要触发更新，具体写法：
+```js
+// 老版本的写法
+import 'PureRenderMixin' from 'react-addons-pure-render-mixin'
+const createReactClass = require('create-react-class')
+
+createReactClass({
+  mixins: [PureRenderMixin], // 可以通过mixins的形式引入
+
+  render: function() {
+    return <div className={this.props.className}>foo</div>
+  }
+})
+```
+```js
+// ES6写法,官方文档建议直接通过继承React.PureComponent来实现这种检测功能
+class App extentds React.PureComponent {
+  // 只有当改变setState才会触发更新，改变原有的值则不会触发更新，这个可以作为组件优化的一种策略
+}
+```
+
+3. `componentWillUpdate`：组件将要更新之前；>=0——否——在即将发生渲染前触发，可以拿到`nextProps`和`nextState`，不能使用setState
+4. `componentDidUpdate`：组件已经更新成功；>=0——否——组件更新成功，可以直接通过`refs`访问DOM元素，函数传入两个参数`prevProps`和`prevState`，上一个属性和状态，具体用法如下：
+```js
+componentDidUpdate(prevProps, prevState) {
+  // One possible fix...
+  let height = ReactDOM.findDOMNode(this).offsetHeight;
+  if (this.state.height !== height ) { // 避免循环调用触发render
+    this.setState({ internalHeight: height }); // 先触发render，然后又回到此生命周期，又触发，无限循环，所以加一重判断，确保只触发一次
+  }
+}
+```
 #### 组件卸载：
-1. `componentWillUnmount`：组件将要卸载之前；1——否
+1. `componentWillUnmount`：组件将要卸载之前；1——否——组件销毁之前，和Vue中的`beforeDestroy`类似，做一些定时器消耗，或者事件监听器的移除操作确保页面的整体性能
+
+### Q4. 组件的开发方式
+* 组件的数据传递：属性传递，基础属性和事件属性都可以传递，子组件需要先注册事件才可以在父组件中调用触发事件；
+* `setState`既是同步，也是异步，场景不同，处理的方式也不尽相同，第二个参数是`state`变更之后的回调，可以获取到最新的状态数据；
+1. `state`就可以类比于Vue中的`data`数据，可以自定义，初始化可以在`constructor`阶段，在`getInitialState`生命周期阶段，并且只能通过`setState`来改变；
+2. `props`就同Vue种的`props`一样，表示组件的属性，通过父组件向子组件传递属性，同Vue不同的地方在于子组件的props不需要初始化定义类型，只要父组件传递，子组件就可以获取，不过也可以在子组件中对`props`进行初始化定义，在`getDefaultProps`生命周期阶段，具体的设置方法是：
+```js
+class App extends Component {
+  constructor(props) {
+    super(props)
+    // 初始化状态
+    this.state = {
+      status: false
+    }
+  }
+  render() {
+    return (
+      <div>{ this.props.name }</div>
+    )
+  }
+}
+// 给组件设置defaultProps就是初始化属性
+App.defaultProps = { name: 'good' }
+// 组件调用
+<App name={ null }/> // name为null
+<App name={ undefined }/> // name为默认值good
+```
+
+### Q4. 组件的分类
+* 在React中，组件可分为`Stateless Component`——无状态组件（不涉及到自身状态的传递）和`Stateful Component`——有状态组件（多种状态的数据传递），一般在功能组件的开发过程中可以尽可能的拆分组件，拆分出来的无状态组件可以直接写成`纯函数`的形式，直接可以在当前组件中引用；
+1. 无状态组件的特点：不包含自己独立的状态，没有继承`React component`，没有自己的生命周期函数，无法访问状态，但是可以访问传入的属性`props`;
+2. 纯函数，相同的输入，固定的输出，对于传入相同的属性，渲染的结果应该是保持一致
+```js
+// 直接返回JSX，传入参数是props
+const Button = (props) => {
+  return <button>{ props.btnText }<button/>
+}
+```
+
+### Q5. React ref的发展历程
+* ref类比于Vue中的refs，用于获取组件中真实的DOM元素，用于DOM操作需求，不过在React发展过程中有三种模式：
+1. 字符串（`string ref`）——在16.0新版本中计划移除，性能不佳，同时应用覆盖场景不够；
+2. 回调函数（`callback ref`）——目前版本中可使用
+3. 新API（`React.createRef`）——官方建议用这种方式来调用
+```js
+// string ref
+class MyComponent extends React.Component {
+  componentDidMount() {
+    this.refs.myRef.focus();
+  }
+  render() {
+    return <input ref="myRef" />;
+  }
+}
+
+// callback ref——在回调中如果有复杂的业务逻辑，建议用类成员函数绑定到callback中，是一个优化的方式
+class MyComponent extends React.Component {
+  componentDidMount() {
+    this.myRef.focus();
+  }
+  render() {
+    return <input ref={(ele) => {
+      this.myRef = ele;
+    }} />;
+  }
+}
+
+// React.createRef
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+  }
+  componentDidMount() {
+    this.myRef.current.focus();
+  }
+  render() {
+    return <input ref={this.myRef} />;
+  }
+}
+
+// React.forwardRef——用于穿过父元素直接获取子元素的ref，应用于HOC组件（高阶组件）
+function HOCProps(WrappedComponent) {
+  class HOCComponent extends React.Component {
+    render() {
+      const { forwardedRef, ...rest } = this.props;
+      return <WrappedComponent ref={forwardedRef} {...rest} />;
+    }
+  }
+
+  return React.forwardRef((props, ref) => {
+    return <HOCComponent forwardedRef={ref} {...props}  />;
+  });
+}
+
+const App = HOCProps(Wrap);
+
+<App ref={(dom) => {
+  // 可以直接获取 WrappedComponent
+  console.log(dom);
+}} />
+```
+
+### Q6. 高阶组件(HOC)的开发及其应用
+* [参考文献](https://juejin.im/post/5c72b97de51d4545c66f75d5)
