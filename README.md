@@ -194,8 +194,8 @@ function Demo() {
 }
 function MoreState() {
   // 传递的参数可以包含各种数据类型
-  const [text, setText] = useState('page')
-  const [todos, setTodos] = useState([{ list: 'showList' }])
+  const [text, setText] = useState('page') // 字符串
+  const [todos, setTodos] = useState([{ list: 'showList' }]) // 数组
 }
 ```
 2. `useEffect`(Effct Hook)——在React组件中执行过数据获取、订阅或者手动修改过 DOM。我们统一把这些操作称为“副作用”，或者简称为“作用”
