@@ -176,3 +176,30 @@ const App = HOCProps(Wrap);
 
 ### Q6. 高阶组件(HOC)的开发及其应用
 * [参考文献](https://juejin.im/post/5c72b97de51d4545c66f75d5)
+
+### Q7. React的Hooks的基础用法(16.8版本新增的写法)
+* [参考文献](https://juejin.im/post/5dbbdbd5f265da4d4b5fe57d)
+* [官方参考文献](https://zh-hans.reactjs.org/docs/hooks-intro.html)
+1. `useState`用于设置状态以及对应的`setState`改变状态的处理函数
+```js
+import React, { useState } from 'react'
+function Demo() {
+  const [count, setCount] = useState(0) // 初始化state-count，并初始化赋值为0
+  return (
+    <div>
+      <p>{ count }</p>
+      <button onClick={ ()=>setCount(count+1) }>Click</button>
+    </div>
+  )
+}
+function MoreState() {
+  // 传递的参数可以包含各种数据类型
+  const [text, setText] = useState('page')
+  const [todos, setTodos] = useState([{ list: 'showList' }])
+}
+```
+2. `useEffect`(Effct Hook)——在React组件中执行过数据获取、订阅或者手动修改过 DOM。我们统一把这些操作称为“副作用”，或者简称为“作用”
+* 此HOOKS和`componentDidMount`，`componentDidUpdate`，`componentWillUnmount`三个钩子具有相同的用途，被合并成同一个API:
+```js
+
+```
