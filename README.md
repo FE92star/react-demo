@@ -201,5 +201,17 @@ function MoreState() {
 2. `useEffect`(Effct Hook)——在React组件中执行过数据获取、订阅或者手动修改过 DOM。我们统一把这些操作称为“副作用”，或者简称为“作用”
 * 此HOOKS和`componentDidMount`，`componentDidUpdate`，`componentWillUnmount`三个钩子具有相同的用途，被合并成同一个API:
 ```js
-
+import React, { useState, useEffect } from 'react'
+function Example() {
+  const [count, setCount] = useState(0)
+  useEffect(() => { // 类似于钩子函数
+    document.title = `had clicked ${count} times`
+  })
+  return (
+    <div>
+      <p>{ count }</p>
+      <button onClick={ ()=>setCount(count+1) }>Click</button>
+    </div>
+  )
+}
 ```
