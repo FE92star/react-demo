@@ -216,3 +216,45 @@ function Example() {
   )
 }
 ```
+
+### Q8. React表单的双向数据绑定
+* React本身是单向数据流，数据的流向只能通过父组件传递props给子组件，不能由子组件直接传递数据给父组件，而是只能通过将事件处理程序作为属性来改变父组件的数据，可以通过事件属性传递来传值给父组件
+```js
+/*  子组件向父组件传递数据的方式——核心方法是子组件通过父组件传递过来的组件实例属性调用父组件的方法，参数是子组件自己的数据
+ 1. 父组件定义一个属性，将整个父组件实例作为参数赋值给该属性，然后在父组件中定义一个接受子组件数据的方法，参数为子组件的数据
+ 2. 子组件定义一个事件处理程序，通过属性拿到父组件定义的方法，然后将自己的数据作为参数传入到方法中即可
+*/
+// 子组件
+class Child extends Component {
+  state = {
+    msg: 'i am a child'
+  }
+  handleToParent = () => {
+    this.props.parent.toChild(this.state.msg)
+  }
+  render() {
+    return (
+      <button onClick={this.handleToParent}></button>
+    )
+  }
+}
+// 父组件
+class Parent extends Component {
+  state = {
+    childMsg: '' // 子组件传递过来的数据
+  }
+  toChild = (msg)=> { // 形参是子组件实例和子组件数据
+    this.setState({
+      childMsg: msg // msg是子组件传递过来的数据
+    })
+  }
+  render() {
+    return (
+      <div className="parent">
+        <h1>{ this.state.childMsg }</h1>
+        <Button parent={ this }/>
+      </div>
+    )
+  }
+}
+```

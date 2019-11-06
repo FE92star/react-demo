@@ -18,7 +18,8 @@ class Button extends Component {
   //   }
   // }
   state = { // 不需要写成this.state，直接state初始化即可
-    status: false
+    status: false,
+    msg: 'i am child msg!!!'
   }
   // 钩子函数，在此处改变状态
   componentDidMount() {
@@ -28,9 +29,12 @@ class Button extends Component {
       console.log(`callback:${this.state.status}`)
     })
   }
+  toParent = () => {
+    this.props.parent.getChildData(this.state.msg)
+  }
   render() {
     return (
-      <div className="button" onClick={ this.props.onClick }>
+      <div className="button" onClick={ this.toParent }>
        {
          this.state.status ? (
           <button>{ this.props.buttonText }</button>
