@@ -12,7 +12,7 @@ class Input extends Component {
     console.log(e.target.value)
   }
   render() {
-    console.log(`render:${new Date().getTime()}`)
+    console.log(`render input:${new Date().getTime()}`)
     return (
       <div>
         <h1>my name is { this.state.name }</h1>

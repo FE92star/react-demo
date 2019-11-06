@@ -23,16 +23,18 @@ class Button extends Component {
   }
   // 钩子函数，在此处改变状态
   componentDidMount() {
-    this.setState({
+    this.setState({ // 异步改变状态
       status: true
     }, () => {
-      console.log(`callback:${this.state.status}`)
+      console.log(`callback: new status ${this.state.status}`)
     })
+    console.log(`async state: ${this.state.status}`)
   }
   toParent = () => {
     this.props.parent.getChildData(this.state.msg)
   }
   render() {
+    console.log(`render button:${new Date().getTime()}`)
     return (
       <div className="button" onClick={ this.toParent }>
        {
