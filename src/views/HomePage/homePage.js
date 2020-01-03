@@ -68,6 +68,46 @@ export default class HomePage extends Component {
     )
   }
 }
+
+export function checkDataType (type) { // 高阶函数
+  return function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${type}]`
+  }
+}
+/* 防抖函数 */
+/* 一般应用于用户的输入，视窗的变化，只在规定的时间内触发一次，节省资源 */
+/* 高阶函数——返回一个新的函数，新函数作为可以调用的方法存储起来，函数的调用将会在delay延时之后只执行一次，每次事件触发则会重新触发计时，理论上如果一直触发则函数可能永远不会执行 */
+export function debounce (fn, delay) {
+  return function (args) {
+    const self = this
+    let timer = null
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn.call(self, args)
+    }, delay)
+  }
+}
+/* 节流函数 */
+/* 将多次触发合并成一次，并且最终肯定会执行一次，初始化肯定会执行一次 */
+/* 高阶函数 */
+export function throttle (fn, delay) {
+  let last, deferTimer
+  return function (args) {
+    let that = this
+    let _args = arguments
+    let now = +new Date() // 日期格式的隐式转换
+    if (last && now < last + delay) {
+      clearTimeout(deferTimer)
+      deferTimer = setTimeout(function () {
+        last = now
+        fn.apply(that, _args)
+      }, delay)
+    } else {
+      last = now
+      fn.apply(that, _args)
+    }
+  }
+}
 // export function ListData (props) {
 //   const { name } = props
 //   const [list, setList] = useState([])

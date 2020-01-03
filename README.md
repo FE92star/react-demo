@@ -258,3 +258,23 @@ class Parent extends Component {
   }
 }
 ```
+
+### Q9. React动画
+* 运用CSS过渡`transition`进行实现，添加删除类名
+```css
+  transition: property duration timing-function delay;
+  /* property——属性，duration——过渡持续时间，timing-function——速度曲线方程，delay——延时时间 */
+  div {
+    width: 200px;
+    height: 100px;
+    transition: width .5s, transform 2s; /* transition: all 2s; */
+    -moz-transition: width .5s, -moz-transform 2s; /* Firfox */
+    -webkit-transition: width .5s, -webkit-transform 2s; /* Safari Chrome */
+    -o-transition: width .5s, -o-transform 2s; /* Opera */
+  }
+  div:hover {
+    width: 400px;
+    height: 200px;
+    transform: translateX(200px);
+  }
+```
