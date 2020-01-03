@@ -62,7 +62,7 @@ export default class HomePage extends Component {
         <h2>{ this.state.data }</h2>
         <Link to="/detail">detail</Link>
         <div></div>
-        <NavLink to="/login">login</NavLink>
+        <NavLink to="/demo">context demo</NavLink>
         <ListData name={this.state.obj} />
       </div>
     )

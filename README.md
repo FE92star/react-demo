@@ -278,3 +278,6 @@ class Parent extends Component {
     transform: translateX(200px);
   }
 ```
+
+### Q10. React状态管理-上下文hooks
+* 搭配`createContext`,`useReducer`,`useContext`来进行简单的数据传递

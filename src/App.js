@@ -3,6 +3,7 @@ import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import LoginPage from './views/Login/login'
 import Detail from './views/Detail/detail'
 import HomePage from './views/HomePage/homePage'
+import ContextDemo from './views/Provider'
 
 const login = true // 是否登录
 
@@ -24,6 +25,7 @@ const App = () => {
           <HomePage />
         </Route>
         <Route path="/detail" component={ Detail }/>
+        <Route path="/demo" component={ContextDemo} />
       </Switch>
     </Router>
   )
