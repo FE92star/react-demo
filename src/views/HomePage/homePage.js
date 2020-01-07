@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, Component } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import './homePage.less'
+import Card from '../Card'
 
 // function ListData(props) { // 无状态组件
 //   const listData = [1,1,1,1,1,1,1]
@@ -64,6 +65,7 @@ export default class HomePage extends Component {
         <div></div>
         <NavLink to="/demo">context demo</NavLink>
         <ListData name={this.state.obj} />
+        <Card />
       </div>
     )
   }
