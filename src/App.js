@@ -1,12 +1,6 @@
 import React from 'react'
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
-import LoginPage from './views/Login/login'
-import Detail from './views/Detail/detail'
 import HomePage from './views/HomePage/homePage'
-import ContextDemo from './views/Provider'
-import Drag from './views/Drag/drag'
-
-const login = true // 是否登录
 
 const App = () => {
   return (
@@ -20,13 +14,11 @@ const App = () => {
       {/* 用于包裹Route组件，渲染第一个匹配的路由，不会重复匹配 */}
       <Switch> 
         <Route exact path="/"> 
-          { login ? <Redirect to="/homePage" /> : <LoginPage />} 
+          <Redirect to="/homePage" />
         </Route>
         <Route path="/homePage">
           <HomePage />
         </Route>
-        <Route path="/detail" component={ Detail }/>
-        <Route path="/demo" component={ContextDemo} />
       </Switch>
     </Router>
   )
