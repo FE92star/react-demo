@@ -4,6 +4,7 @@ import LoginPage from './views/Login/login'
 import Detail from './views/Detail/detail'
 import HomePage from './views/HomePage/homePage'
 import ContextDemo from './views/Provider'
+import Drag from './views/Drag/drag'
 
 const login = true // 是否登录
 

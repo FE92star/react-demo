@@ -280,4 +280,76 @@ class Parent extends Component {
 ```
 
 ### Q10. React状态管理-上下文hooks
-* 搭配`createContext`,`useReducer`,`useContext`来进行简单的数据传递
+* 搭配`createContext`,`useReducer`,`useContext`来进行简单的数据传递，context提供了一个可以共享状态的上下文
+1. 使用`createContext`创建一个上下文对象，可以传递一个默认值，当React渲染了一个订阅了这个Context对象的组件，这个组件就会从组件树中距离自身最近的匹配到的Provider中读取到当前的context值，如果匹配失败，则defaultValue才会生效
+```js
+const MyContext = React.createContext(defaultValue || {})
+```
+2. 使用`MyContext.Provider`组件包裹一个可以消费其上下文的组件，接收一个value属性，作为上下文信息传递给消费组件，一个Provider可以供多个组件消费，同时Provider组件可以嵌套使用，内部的会覆盖外层的数据，value一旦发生变更，对应的消费组件都会发生更新重新渲染。
+```js
+<MyContext.Provider value={value}></MyContext.Provider>
+```
+3. 也可以使用`MyContext.Consumer`为函数式组件完成订阅context
+```js
+// 函数式组件，在HOOKS没有出来之前，无法通过class组件的方式获取context，因此可以用这种方式获取
+<MyContext.Consumer>
+  { value => /* 基于 context 值进行渲染*/ }
+  {
+    ({value}) => ( // context可以作为参数传递给子组件
+      <div></div>
+    )
+  }
+</MyContext.Consumer>
+```
+4. 使用`MyContext.displayName`返回一个字符串作为标识
+```js
+MyContext.displayName = 'contextName'
+```
+5. 一个组件可以消费多个`context`
+```js
+const ThemeContext = React.createContext('light');
+
+// 用户登录 context
+const UserContext = React.createContext({
+  name: 'Guest',
+});
+
+class App extends React.Component {
+  render() {
+    const {signedInUser, theme} = this.props;
+
+    // 提供初始 context 值的 App 组件
+    return (
+      <ThemeContext.Provider value={theme}>
+        <UserContext.Provider value={signedInUser}>
+          <Layout />
+        </UserContext.Provider>
+      </ThemeContext.Provider>
+    );
+  }
+}
+
+function Layout() {
+  return (
+    <div>
+      <Sidebar />
+      <Content />
+    </div>
+  );
+}
+
+// 一个组件可能会消费多个 context
+function Content() {
+  return (
+    <ThemeContext.Consumer> {/* 一级消费 */}
+      {theme => (
+        <UserContext.Consumer>  {/* 二级消费 */}
+          {user => (
+            <ProfilePage user={user} theme={theme} />
+          )}
+        </UserContext.Consumer>
+      )}
+    </ThemeContext.Consumer>
+  );
+}
+```
